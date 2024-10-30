@@ -16,7 +16,9 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-
+    // Fallback method
+    // Exception handler -> Uygulamada belirlediğim türdeki ex. nerede fırlarsa fırlasın. Bu methoda gelsin.
+    // Ex. Handler methodların 1. parametresi oto. olarak fırlayan ex. doldurulur.
     @ExceptionHandler({ MethodArgumentNotValidException.class })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String,String> handleValidationException(MethodArgumentNotValidException exception) {
@@ -26,7 +28,8 @@ public class GlobalExceptionHandler {
                 exception.getBindingResult().getFieldErrors()) {
             errors.put(error.getField(), error.getDefaultMessage());
         }
-
+        // stock, must be greater than or equal to 0
+        // name, must not be empty
         return errors;
     }
 
@@ -36,7 +39,13 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BusinessExceptionResponse handleBusinessException(BusinessException exception)
     {
-        return new BusinessExceptionResponse(exception.getMessage());
+        return new BusinessExceptionResponse(HttpStatus.BAD_REQUEST.value(),exception.getMessage());
+    }
+
+    @ExceptionHandler({RuntimeException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String handleRuntimeException(){
+        return "Bilinmedik hata";
     }
 
 }

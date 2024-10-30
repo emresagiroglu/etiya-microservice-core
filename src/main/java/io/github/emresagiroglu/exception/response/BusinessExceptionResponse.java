@@ -5,5 +5,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BusinessExceptionResponse {
-    private String message;
+    private int status;
+    private String error;
 }
